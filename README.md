@@ -19,6 +19,38 @@ PlayPI stands out as a versatile, multi-protocol API playground:
 -   **Offline testing**: No internet connection is required; all APIs run locally.
 -   **Ease of use**: Simple CLI and Docker-based installation options make it beginner-friendly.
 
+## Web Dashboard (NEW!)
+
+Manage all PlayPI services from your browser with the new web dashboard.
+
+### Start the Dashboard
+
+```bash
+./playpi start dashboard
+```
+
+Then open your browser to: **http://localhost:8000**
+
+### Features
+
+- Start/stop any service with one click
+- Real-time service status updates
+- View service details (ports, descriptions)
+- Monitor all services from one place
+- Perfect for workshops and demos
+
+### Available Services in Dashboard
+
+All 6 API services can be controlled:
+- RESTful Inventory Manager (port 8080)
+- RESTful Task Manager (port 8085)
+- GraphQL Inventory Manager (port 8081)
+- gRPC Inventory Manager (port 8082)
+- gRPC User Registration (port 8084)
+- WebSocket Live Chat (port 8086)
+
+----------
+
 ## Quick Start Using CLI
 
 ### Download the Binary
@@ -26,13 +58,14 @@ PlayPI stands out as a versatile, multi-protocol API playground:
 1.  Go to the [Releases](https://github.com/abhivaikar/PlayPI/releases/latest) page of this repository.
 2.  Download the binary for your platform (only macOS & Linux supported currently).
 3.  Make the binary executable (if required):
-    `chmod +x playpi` 
-    
-### Run the Playground
-Use the following command to start the desired service:
-`./playpi start [api-type]` 
+    `chmod +x playpi`
+
+### Run Individual Services
+Use the following command to start a specific service:
+`./playpi start [api-type]`
 
 Replace `[api-type]` with one of the following:
+-   `dashboard` (NEW! Web-based management UI)
 -   `restful-inventory-manager`
 -   `restful-task-manager`
 -   `graphql-inventory-manager`
@@ -44,30 +77,74 @@ Replace `[api-type]` with one of the following:
 `./playpi start restful-inventory-manager`
 
 ## Docker Installation and Usage
-If you are a docker fan and prefer not downloading the binary, you can run the playground using a docker image too!
 
-### Pull the Docker Image
-`docker pull abhijeetvaikar/playpi:latest` 
+### Option 1: Run the Dashboard (Recommended)
 
-### Run the Playground
-Run a specific API service:
-`docker run -p <port>:<port> abhijeetvaikar/playpi start [api-type]` 
+The easiest way to use PlayPI with Docker is to run the dashboard, which lets you manage all services from your browser.
+
+#### Pull the Docker Image
+```bash
+docker pull taqelah/playpi_dashboard:latest
+```
+
+#### Run the Dashboard
+```bash
+docker run -p 8000:8000 -p 8080:8080 -p 8081:8081 -p 8082:8082 -p 8084:8084 -p 8085:8085 -p 8086:8086 taqelah/playpi_dashboard:latest
+```
+
+Then open your browser to: **http://localhost:8000**
+
+From the dashboard, you can:
+- Start/stop any service with one click
+- View real-time service status
+- Test API endpoints interactively
+- Access all 6 services from one interface
+
+**Exposed Ports:**
+- `8000` - Web Dashboard
+- `8080` - RESTful Inventory Manager
+- `8081` - GraphQL Inventory Manager
+- `8082` - gRPC Inventory Manager
+- `8084` - gRPC User Registration
+- `8085` - RESTful Task Manager
+- `8086` - WebSocket Live Chat
+
+### Option 2: Run Individual Services
+
+If you prefer to run a specific API service directly:
+
+#### Pull the Docker Image
+```bash
+docker pull abhijeetvaikar/playpi:latest
+```
+
+#### Run a Specific Service
+```bash
+docker run -p <port>:<port> abhijeetvaikar/playpi start [api-type]
+```
 
 Replace `<port>` and `[api-type]` as needed.
 
-### Example:
--   Start RESTful Inventory Manager:
-    `docker run -p 8080:8080 abhijeetvaikar/playpi start restful-inventory-manager`
-- Start RESTful Task Management API:
-`docker run -p 8085:8085 abhijeetvaikar/playpi start restful-task-manager`
-- Start GraphQL inventory Management API:
-`docker run -p 8081:8081 abhijeetvaikar/playpi start graphql-inventory-manager`
-- Start gRPC inventory management API:
-`docker run -p 8082:8082 abhijeetvaikar/playpi start grpc-inventory-manager`
-- Start gRPC user registration API:
-`docker run -p 8084:8084 abhivaikar/playpi start grpc-user-registration`
-- Start websocket live chat API:
-`docker run -p 8086:8086 abhijeetvaikar/playpi start websocket-live-chat`
+#### Examples:
+```bash
+# Start RESTful Inventory Manager
+docker run -p 8080:8080 abhijeetvaikar/playpi start restful-inventory-manager
+
+# Start RESTful Task Management API
+docker run -p 8085:8085 abhijeetvaikar/playpi start restful-task-manager
+
+# Start GraphQL inventory Management API
+docker run -p 8081:8081 abhijeetvaikar/playpi start graphql-inventory-manager
+
+# Start gRPC inventory management API
+docker run -p 8082:8082 abhijeetvaikar/playpi start grpc-inventory-manager
+
+# Start gRPC user registration API
+docker run -p 8084:8084 abhijeetvaikar/playpi start grpc-user-registration
+
+# Start websocket live chat API
+docker run -p 8086:8086 abhijeetvaikar/playpi start websocket-live-chat
+```
 
 ## Accessing a service once started
 Which client you want to use to access the service on the playground is entirely upto you. But here are some suggestions.

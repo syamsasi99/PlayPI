@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayPI Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 PlayPI Dashboard</h1>
+            <p>API Service Manager - All services running locally</p>
+        </header>
+
+        <div class="connection-status">
+            <span id="connection-indicator" class="status-dot disconnected"></span>
+            <span id="connection-text">Connecting...</span>
+        </div>
+
+        <div class="dashboard-layout">
+            <div class="column stopped-column">
+                <h2 class="column-header">Stopped Services</h2>
+                <div class="services-list" id="stopped-services">
+                    <!-- Stopped service cards will be inserted here -->
+                </div>
+            </div>
+
+            <div class="column running-column">
+                <h2 class="column-header">Running Services</h2>
+                <div class="services-list" id="running-services">
+                    <!-- Running service cards will be inserted here -->
+                </div>
+            </div>
+
+            <div class="column test-column">
+                <h2 class="column-header">API Testing Panel</h2>
+                <div id="test-panel-content">
+                    <div class="no-selection">
+                        <p>Click on a running service to test its API endpoints</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="service-card-template">
+        <div class="service-card" data-service-id="" onclick="selectService(this)">
+            <div class="service-header">
+                <div class="service-title">
+                    <h3 class="service-name"></h3>
+                    <span class="service-type-badge"></span>
+                </div>
+                <div class="service-status">
+                    <span class="status-indicator"></span>
+                    <span class="status-text"></span>
+                </div>
+            </div>
+            <div class="service-body">
+                <p class="service-description"></p>
+                <div class="service-info">
+                    <span class="port-info">Port: <strong class="port-number"></strong></span>
+                </div>
+                <div class="service-error" style="display: none;">
+                    <span class="error-text"></span>
+                </div>
+            </div>
+            <div class="service-actions" onclick="event.stopPropagation()">
+                <button class="btn btn-start" onclick="startService(this)">Start</button>
+                <button class="btn btn-stop" onclick="stopService(this)">Stop</button>
+            </div>
+        </div>
+    </template>
+
+    <script src="app.js"></script>
+</body>
+</html>
