@@ -3,7 +3,7 @@
 set -e  # Exit if any command fails
 
 # Define variables
-IMAGE_NAME="abhijeetvaikar/playpi"
+IMAGE_NAME="taqelah/playpi"
 TAG="latest"
 
 echo "Building Docker image for PlayPI Dashboard..."
