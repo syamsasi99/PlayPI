@@ -363,6 +363,11 @@ header p {
     color: white;
 }
 
+.method-badge.grpc {
+    background: #06b6d4;
+    color: white;
+}
+
 .example-description {
     color: var(--text-secondary);
     font-size: 0.9rem;
@@ -373,6 +378,24 @@ header p {
     margin-bottom: 0.75rem;
 }
 
+.url-row,
+.body-row,
+.command-row {
+    margin-bottom: 0.75rem;
+}
+
+.url-row label,
+.body-row label,
+.command-row label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.5px;
+}
+
 .example-url {
     display: block;
     padding: 0.5rem;
@@ -380,7 +403,6 @@ header p {
     border-radius: 0.25rem;
     color: #60a5fa;
     font-size: 0.85rem;
-    margin-bottom: 0.5rem;
     word-break: break-all;
 }
 
@@ -395,6 +417,30 @@ header p {
     overflow-x: auto;
     margin: 0;
     border: 1px solid var(--border-color);
+}
+
+.editable-body {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.editable-body:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.editable-body:invalid {
+    border-color: var(--danger-color);
 }
 
 .btn-try {

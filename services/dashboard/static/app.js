@@ -66,8 +66,8 @@ const apiExamples = {
     'grpc-inventory-manager': [
         {
             title: 'gRPC Service Info',
-            method: 'INFO',
-            url: 'localhost:8082',
+            method: 'gRPC',
+            url: 'grpc://localhost:8082',
             description: 'Use grpcurl or Postman to test',
             command: 'grpcurl -plaintext localhost:8082 list'
         }
@@ -75,8 +75,8 @@ const apiExamples = {
     'grpc-user-registration': [
         {
             title: 'gRPC Service Info',
-            method: 'INFO',
-            url: 'localhost:8084',
+            method: 'gRPC',
+            url: 'grpc://localhost:8084',
             description: 'Use grpcurl or Postman to test',
             command: 'grpcurl -plaintext localhost:8084 list'
         }
@@ -345,7 +345,13 @@ function updateTestPanel(service) {
     const testPanelContent = document.getElementById('test-panel-content');
     const examples = apiExamples[service.id] || [];
 
-    const examplesHTML = examples.map((example, index) => `
+    const examplesHTML = examples.map((example, index) => {
+        // For WebSocket and gRPC, use the full URL as-is; for HTTP, construct the URL
+        const displayUrl = example.url.startsWith('ws://') || example.url.startsWith('grpc://')
+            ? example.url
+            : `http://localhost:${service.port}${example.url}`;
+
+        return `
         <div class="api-example" data-example-index="${index}">
             <div class="example-header">
                 <span class="method-badge ${example.method.toLowerCase()}">${example.method}</span>
@@ -353,15 +359,29 @@ function updateTestPanel(service) {
             </div>
             <p class="example-description">${example.description}</p>
             <div class="example-details">
-                <code class="example-url">http://localhost:${service.port}${example.url}</code>
-                ${example.body ? `<pre class="example-body">${JSON.stringify(example.body, null, 2)}</pre>` : ''}
-                ${example.command ? `<pre class="example-command">${example.command}</pre>` : ''}
+                <div class="url-row">
+                    <label>URL:</label>
+                    <code class="example-url">${displayUrl}</code>
+                </div>
+                ${example.body ? `
+                    <div class="body-row">
+                        <label>Request Body (editable):</label>
+                        <textarea class="editable-body" rows="8" data-example-index="${index}">${JSON.stringify(example.body, null, 2)}</textarea>
+                    </div>
+                ` : ''}
+                ${example.command ? `
+                    <div class="command-row">
+                        <label>Command:</label>
+                        <pre class="example-command">${example.command}</pre>
+                    </div>
+                ` : ''}
             </div>
             ${example.method === 'GET' || example.method === 'POST' ? `
                 <button class="btn btn-try" onclick="tryApiCall('${service.id}', ${index}, ${service.port})">Try It</button>
             ` : ''}
         </div>
-    `).join('');
+        `;
+    }).join('');
 
     testPanelContent.innerHTML = `
         <div class="test-panel-service-header">
@@ -406,8 +426,25 @@ async function tryApiCall(serviceId, exampleIndex, port) {
             headers: { 'Content-Type': 'application/json' }
         };
 
-        if (example.body) {
-            options.body = JSON.stringify(example.body);
+        // Get body from editable textarea if it exists
+        const editableBody = exampleDiv.querySelector('.editable-body');
+        if (editableBody) {
+            try {
+                const bodyData = JSON.parse(editableBody.value);
+                options.body = JSON.stringify(bodyData);
+            } catch (parseError) {
+                // Display error if JSON is invalid
+                const resultHTML = `
+                    <div class="api-result error">
+                        <strong>✗ Invalid JSON in request body:</strong>
+                        <pre>${parseError.message}</pre>
+                    </div>
+                `;
+                exampleDiv.insertAdjacentHTML('beforeend', resultHTML);
+                tryBtn.textContent = originalText;
+                tryBtn.disabled = false;
+                return;
+            }
         }
 
         const response = await fetch(url, options);

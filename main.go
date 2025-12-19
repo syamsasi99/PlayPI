@@ -75,8 +75,24 @@ Available options:
 		},
 	}
 
+	// cleanupCmd represents the cleanup command
+	var cleanupCmd = &cobra.Command{
+		Use:   "cleanup",
+		Short: "Free all ports used by PlayPI services",
+		Long:  `Kills all processes using ports 8000-8086 to free them for PlayPI services.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Cleaning up PlayPI ports...")
+			if err := servicemanager.FreeDashboardPorts(); err != nil {
+				fmt.Printf("Error: %v\n", err)
+				os.Exit(1)
+			}
+			fmt.Println("Cleanup completed successfully!")
+		},
+	}
+
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(cleanupCmd)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -86,6 +102,13 @@ Available options:
 
 // startDashboard initializes and starts the web dashboard
 func startDashboard() {
+	// Free ports before starting
+	fmt.Println("Preparing dashboard...")
+	if err := servicemanager.FreeDashboardPorts(); err != nil {
+		fmt.Printf("Warning: %v\n", err)
+		fmt.Println("Continuing anyway...")
+	}
+
 	// Initialize service manager
 	sm := servicemanager.NewServiceManager()
 
@@ -99,8 +122,8 @@ func startDashboard() {
 
 	// Start dashboard
 	dashboardServer := dashboard.NewDashboardServer(sm)
-	fmt.Println("Dashboard running on http://localhost:8000")
-	fmt.Println("Open your browser to manage all services")
+	fmt.Println("\n✓ Dashboard running on http://localhost:8000")
+	fmt.Println("Open your browser to manage all services\n")
 
 	if err := dashboardServer.Start(context.Background()); err != nil {
 		log.Fatal(err)

@@ -76,6 +76,17 @@ Replace `[api-type]` with one of the following:
 ### Example:
 `./playpi start restful-inventory-manager`
 
+### Port Cleanup
+
+If you encounter "port already in use" errors, PlayPI can automatically free the required ports:
+
+```bash
+# Free all PlayPI ports (8000-8086)
+./playpi cleanup
+```
+
+**Note:** When starting the dashboard, ports are automatically freed, so manual cleanup is usually not needed.
+
 ## Docker Installation and Usage
 
 ### Option 1: Run the Dashboard (Recommended)
